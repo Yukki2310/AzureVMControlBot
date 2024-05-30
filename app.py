@@ -21,7 +21,7 @@ guild = discord.Object(id=config["guild_id"])
 ############################################################################################################
 
 # VMを起動する関数
-async def start_vm(subcription_id, resource_group, vm_name):
+async def powerOn(subcription_id, resource_group, vm_name):
     # azure 認証を取得
     credential = DefaultAzureCredential()
 
@@ -37,7 +37,7 @@ async def start_vm(subcription_id, resource_group, vm_name):
 
 
 # VMを停止する関数
-async def stop_vm(subcription_id, resource_group, vm_name):
+async def powerOff(subcription_id, resource_group, vm_name):
     # azure 認証を取得
     credential = DefaultAzureCredential()
 
@@ -60,36 +60,36 @@ def getResponse(url):
 ############################################################################################################
 
 # サーバーの起動
-@tree.command(name = "startmc", description = "Minecraftサーバーを起動します")
+@tree.command(name = "startvm", description = "仮想マシンを起動します")
 @app_commands.guilds(guild)
-async def startMC(interaction: discord.Interaction):
+async def startVM(interaction: discord.Interaction):
     # defer
     await interaction.response.defer()
 
     # VMを起動
-    await start_vm(config["subscription_id"], config["resource_group"], config["vm_name"])
+    await powerOn(config["subscription_id"], config["resource_group"], config["vm_name"])
 
     embed = discord.Embed( # Embedを定義する
-        title="サーバーを起動しました",# タイトル
+        title="仮想マシンを起動しました",# タイトル
         color=0x00ff00, # フレーム色指定(今回は緑)
-        description="taira.japaneast.cloudapp.azure.com" # Embedの説明文 必要に応じて
+        description="" # Embedの説明文 必要に応じて
     )
     await interaction.followup.send(embed=embed) # Embedを送信
 
 # サーバーの停止
-@tree.command(name = "stopmc", description = "Minecraftサーバーを停止します")
+@tree.command(name = "stopvm", description = "仮想マシンを停止します")
 @app_commands.guilds(guild)
-async def stopMC(interaction: discord.Interaction):
+async def stopVM(interaction: discord.Interaction):
     # defer
     await interaction.response.defer()
 
     #VMを停止
-    await stop_vm(config["subscription_id"], config["resource_group"], config["vm_name"])
+    await powerOff(config["subscription_id"], config["resource_group"], config["vm_name"])
 
     embed = discord.Embed( # Embedを定義する
-        title="サーバーを停止しました",# タイトル
+        title="仮想マシンを停止しました",# タイトル
         color=0xff0000, # フレーム色指定(今回は赤)
-        description="taira.japaneast.cloudapp.azure.com" # Embedの説明文 必要に応じて
+        description="" # Embedの説明文 必要に応じて
     )
     await interaction.followup.send("embed=embed") # Embedを送信
 
@@ -97,5 +97,5 @@ async def stopMC(interaction: discord.Interaction):
 async def on_ready():
     await tree.sync(guild=guild)
 
-token = os.getenv("MCSERVER_TOKEN")
+token = os.getenv("BOT_TOKEN")
 client.run(token)
